@@ -1,15 +1,17 @@
 from audiocraft.models import MusicGen
-import streamlit as st 
-import torch 
+import streamlit as st
+import torch
 import torchaudio
-import os 
+import os
 import numpy as np
 import base64
+
 
 @st.cache_resource
 def load_model():
     model = MusicGen.get_pretrained('facebook/musicgen-small')
     return model
+
 
 def generate_music_tensors(description, duration: int):
     print("Description: ", description)
@@ -54,6 +56,7 @@ def save_audio(samples: torch.Tensor):
         audio_path = os.path.join(save_path, f"audio_{idx}.wav")
         torchaudio.save(audio_path, audio, sample_rate)
 
+
 def get_binary_file_downloader_html(bin_file, file_label='File'):
     with open(bin_file, 'rb') as f:
         data = f.read()
@@ -61,20 +64,21 @@ def get_binary_file_downloader_html(bin_file, file_label='File'):
     href = f'<a href="data:application/octet-stream;base64,{bin_str}" download="{os.path.basename(bin_file)}">Download {file_label}</a>'
     return href
 
+
 st.set_page_config(
-    page_icon= "musical_note",
-    page_title= "Music Gen"
+    page_icon="musical_note",
+    page_title="Music Gen"
 )
 
-def main():
 
-    st.title("Text to Music Composer🎵")
+def main():
+    st.title("AI Music Composer🎵")
 
     with st.expander("See explanation"):
         st.write("Music Generator app built using Meta's Audiocraft library. We are using Music Gen Small model.")
 
     text_area = st.text_area("Enter your description.......")
-    time_slider = st.slider("Select time duration (In Seconds)", 0, 20, 10, format="%.0f")
+    time_slider = st.slider("Select time duration (In Seconds)", 0, 60, 10, format="%.0f")
 
     # Add custom CSS to change the color of the slider
     st.markdown("""
@@ -109,6 +113,3 @@ def main():
 
 if __name__ == "__main__":
     main()
-    
-
-
